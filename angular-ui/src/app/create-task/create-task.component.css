@@ -1,0 +1,40 @@
+.task-form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #a3bbd8;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  
+  .form-field {
+    flex: 1;
+    min-width: 280px;
+    margin-right: 16px;
+  }
+  
+  .form-field:last-child {
+    margin-right: 0;
+  }
+  
+  .submit-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  button {
+    width: 150px;
+  }
+  
+
+
+
+

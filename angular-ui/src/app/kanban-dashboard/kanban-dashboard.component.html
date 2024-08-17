@@ -1,0 +1,53 @@
+<div class="kanban-board">
+  <div class="kanban-column"
+       cdkDropList
+       id="todoList"
+       [cdkDropListData]="todoTasks"
+       [cdkDropListConnectedTo]="['inProgressList', 'readyForQaList', 'doneList']"
+       (cdkDropListDropped)="drop($event)"
+       (cdkDropListEntered)="highlightColumn($event, 'todoList')"
+       (cdkDropListExited)="removeHighlight('todoList')"
+     >
+    <h2>TO-DO</h2>
+    <div class="example-box" *ngFor="let task of todoTasks" cdkDrag>{{task.name}}</div>
+  </div>
+
+  <div class="kanban-column"
+       cdkDropList
+       id="inProgressList"
+       [cdkDropListData]="inProgressTasks"
+       [cdkDropListConnectedTo]="['todoList', 'readyForQaList', 'doneList']"
+       (cdkDropListDropped)="drop($event)"
+       (cdkDropListEntered)="highlightColumn($event, 'inProgressList')"
+       (cdkDropListExited)="removeHighlight('inProgressList')"
+     >
+    <h2>IN PROGRESS</h2>
+    <div class="example-box" *ngFor="let task of inProgressTasks" cdkDrag>{{task.name}}</div>
+  </div>
+
+  <div class="kanban-column"
+       cdkDropList
+       id="readyForQaList"
+       [cdkDropListData]="readyForQaTasks"
+       [cdkDropListConnectedTo]="['todoList', 'inProgressList', 'doneList']"
+       (cdkDropListDropped)="drop($event)"
+       (cdkDropListEntered)="highlightColumn($event, 'readyForQaList')"
+       (cdkDropListExited)="removeHighlight('readyForQaList')"
+       >
+    <h2>READY FOR QA</h2>
+    <div class="example-box" *ngFor="let task of readyForQaTasks" cdkDrag>{{task.name}}</div>
+  </div>
+
+  <div class="kanban-column"
+       cdkDropList
+       id="doneList"
+       [cdkDropListData]="doneTasks"
+       [cdkDropListConnectedTo]="['todoList', 'inProgressList', 'readyForQaList']"
+       (cdkDropListDropped)="drop($event)"
+       (cdkDropListEntered)="highlightColumn($event, 'doneList')"
+       (cdkDropListExited)="removeHighlight('doneList')"
+       >
+    <h2>DONE</h2>
+    <div class="example-box" *ngFor="let task of doneTasks" cdkDrag>{{task.name}}</div>
+  </div>
+</div>

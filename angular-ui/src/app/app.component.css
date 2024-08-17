@@ -1,0 +1,63 @@
+/* Navbar container styling */
+.navbar {
+    background-color: #2c3e50;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    padding: 10px 20px;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    color: #23464e;
+    font-weight: bold;
+    margin-right: 20px;
+  }
+  
+  /* Navbar brand styling */
+  .navbar-brand {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    color: #23464e;
+    font-weight: bold;
+    margin-right: 20px;
+  }
+  
+  /* Navbar links styling */
+  .navbar-nav .nav-link {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    color: #1a1f20; 
+    margin-right: 10px;
+    margin-top:10px;
+    margin-left:  10px;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    color: #3498db; 
+    text-decoration: underline;
+  }
+  
+ 
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28236, 240, 241, 1%29' stroke-width='2' linecap='round' linejoin='round' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  }
+  
+  .navbar-collapse {
+    background-color: #34495e; 
+    border-radius: 0 0 10px 10px;
+  }
+  
+  @media (max-width: 992px) {
+    .navbar {
+      padding: 10px 10px;
+    }
+  
+    .navbar-nav .nav-link {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+  }
+  

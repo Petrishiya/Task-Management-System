@@ -1,0 +1,67 @@
+
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="taskModalLabel">Create Task</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="task-form-container">
+          <div class="mb-3">
+            <label for="taskName" class="form-label">Name</label>
+            <input type="text" id="taskName" class="form-control" formControlName="name" />
+            <div *ngIf="taskForm.get('name')?.invalid && taskForm.get('name')?.touched" class="text-danger">
+              Name is required and must be alphanumeric.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="taskDescription" class="form-label">Description</label>
+            <textarea id="taskDescription" class="form-control" rows="3" formControlName="description"></textarea>
+            <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="text-danger">
+              Description is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="taskAssignee" class="form-label">Assignee</label>
+            <select id="taskAssignee" class="form-select" formControlName="assignee">
+              <option *ngFor="let assignee of assignees" [value]="assignee">{{assignee}}</option>
+            </select>
+            <div *ngIf="taskForm.get('assignee')?.invalid && taskForm.get('assignee')?.touched" class="text-danger">
+              Assignee is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="taskCreator" class="form-label">Creator</label>
+            <select id="taskCreator" class="form-select" formControlName="creator">
+              <option *ngFor="let creator of creators" [value]="creator">{{creator}}</option>
+            </select>
+            <div *ngIf="taskForm.get('creator')?.invalid && taskForm.get('creator')?.touched" class="text-danger">
+              Creator is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="taskStatus" class="form-label">Status</label>
+            <select id="taskStatus" class="form-select" formControlName="status">
+              <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
+            </select>
+            <div *ngIf="taskForm.get('status')?.invalid && taskForm.get('status')?.touched" class="text-danger">
+              Status is required.
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
