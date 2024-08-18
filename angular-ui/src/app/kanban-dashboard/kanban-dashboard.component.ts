@@ -88,7 +88,7 @@ export class KanbanDashboardComponent implements OnInit {
   }
 
   highlightColumn(event: any, columnId: string) {
-    this.removeAllHighlights();  // Remove highlights from all columns first
+    this.removeAllHighlights(); 
     document.getElementById(columnId)?.classList.add('highlight');
   }
 

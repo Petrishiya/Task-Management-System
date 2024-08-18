@@ -1,0 +1,24 @@
+.table td {
+    vertical-align: middle;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  input[type='checkbox'] {
+    margin-left: 10px;
+  }
+  

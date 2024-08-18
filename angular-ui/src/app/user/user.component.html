@@ -1,0 +1,89 @@
+<div class="container">
+    <!-- Trigger Button -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+      Create User
+    </button>
+  
+    <!-- Modal for Creating a User -->
+    <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createUserModalLabel">Create User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="userForm" (ngSubmit)="createUser()">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input id="name" formControlName="name" class="form-control" />
+                <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched" class="text-danger">
+                  Name is required.
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" formControlName="email" class="form-control" />
+                <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
+                  Valid email is required.
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="mobileNo">Mobile Number</label>
+                <input id="mobileNo" formControlName="mobileNo" class="form-control" />
+                <div *ngIf="userForm.get('mobileNo')?.invalid && userForm.get('mobileNo')?.touched" class="text-danger">
+                  Valid mobile number is required.
+                </div>
+              </div>
+  
+              <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" formControlName="status" class="form-control">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+  
+              <button type="submit" class="btn btn-primary mt-3" [disabled]="userForm.invalid">Create User</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-5">
+        <h2>User List Data</h2>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>S.no</th>
+              <th>User Name</th>
+              <th>Email</th>
+              <th>Mobile No</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.mobileNo }}</td>
+              <td>
+                <button
+                  class="btn"
+                  [ngClass]="{
+                    'btn-success': user.status === 'ACTIVE',
+                    'btn-danger': user.status === 'INACTIVE'
+                  }"
+                  (click)="toggleUserStatus(user)"
+                >
+                  {{ user.status === 'ACTIVE' ? 'Active' : 'Inactive' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      

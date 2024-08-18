@@ -27,7 +27,7 @@ export class TaskService {
   }
 
 createTask(task: any): Observable<any> {
-  return this.http.post(`http://localhost:8080/api/tasks/createTasks`, task);
+  return this.http.post(`http://localhost:8080/api/tasks/createTask`, task);
 }
 
 
@@ -37,5 +37,9 @@ createTask(task: any): Observable<any> {
 
   deleteTask(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  getAssigneesAndCreators(): Observable<string[]> {
+    return this.http.get<string[]>(`http://localhost:8080/api/users/getAssigneesAndCreators`);
   }
 }

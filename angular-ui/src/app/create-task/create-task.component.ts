@@ -93,11 +93,10 @@ export class CreateTaskComponent implements OnInit,AfterViewInit {
   }
 
   fetchCreators(): void {
-    this.taskService.getCreators().subscribe(
-      data => {
-        this.creators = data;
+    this.taskService.getCreators().subscribe((activeUsers) => {
+      this.creators = activeUsers;
       },
-      error => {
+      (error) => {
         console.error('Error fetching creators', error);
       }
     );

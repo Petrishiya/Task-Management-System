@@ -1,3 +1,14 @@
+
+.box-title {
+  background-color: #007bff; /* Blue background for the title box */
+  color: white;
+  padding: 10px;
+  border-radius: 5px 5px 0 0; /* Rounded corners at the top */
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
 .kanban-board {
   display: flex;
   justify-content: space-between;
@@ -76,31 +87,32 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Highlighting the column during drag enter */
+/* Highlighting the column during drag */
 .kanban-column.highlight {
-  background-color: #e3f2fd; /* Highlight color */
-  box-shadow: 0 0 15px rgba(159, 18, 103, 0.5); /* Blue shadow */
+  background-color: #cacfd2; 
+  box-shadow: 0 0 25px rgba(159, 18, 103, 0.5); 
 }
 .kanban-column::-webkit-scrollbar {
   width: 8px;
 }
 
 .kanban-column::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(138, 107, 107, 0.918);
   border-radius: 4px;
 }
 #todoList:hover {
-  background-color: #ffebee; /* Light red */
+  background-color: #67383f; 
 }
 
 #inProgressList:hover {
-  background-color: #fff3e0; /* Light orange */
+  background-color: #c09e67;
 }
 
 #readyForQaList:hover {
-  background-color: #e8f5e9; /* Light green */
+  background-color: #59ae60; 
 }
 
 #doneList:hover {
-  background-color: #e3f2fd; /* Light blue */
+  background-color: #446f8f; 
 }
+

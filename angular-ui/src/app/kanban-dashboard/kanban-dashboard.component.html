@@ -1,3 +1,4 @@
+
 <div class="kanban-board">
   <div class="kanban-column"
        cdkDropList
@@ -8,8 +9,8 @@
        (cdkDropListEntered)="highlightColumn($event, 'todoList')"
        (cdkDropListExited)="removeHighlight('todoList')"
      >
-    <h2>TO-DO</h2>
-    <div class="example-box" *ngFor="let task of todoTasks" cdkDrag>{{task.name}}</div>
+     <div class="box-title">TO-DO</div>
+     <div class="example-box" *ngFor="let task of todoTasks" cdkDrag>{{task.name}}</div>
   </div>
 
   <div class="kanban-column"
@@ -21,8 +22,8 @@
        (cdkDropListEntered)="highlightColumn($event, 'inProgressList')"
        (cdkDropListExited)="removeHighlight('inProgressList')"
      >
-    <h2>IN PROGRESS</h2>
-    <div class="example-box" *ngFor="let task of inProgressTasks" cdkDrag>{{task.name}}</div>
+     <div class="box-title">IN PROGRESS</div>
+     <div class="example-box" *ngFor="let task of inProgressTasks" cdkDrag>{{task.name}}</div>
   </div>
 
   <div class="kanban-column"
@@ -34,8 +35,8 @@
        (cdkDropListEntered)="highlightColumn($event, 'readyForQaList')"
        (cdkDropListExited)="removeHighlight('readyForQaList')"
        >
-    <h2>READY FOR QA</h2>
-    <div class="example-box" *ngFor="let task of readyForQaTasks" cdkDrag>{{task.name}}</div>
+       <div class="box-title">READY FOR QA</div>
+       <div class="example-box" *ngFor="let task of readyForQaTasks" cdkDrag>{{task.name}}</div>
   </div>
 
   <div class="kanban-column"
@@ -47,7 +48,7 @@
        (cdkDropListEntered)="highlightColumn($event, 'doneList')"
        (cdkDropListExited)="removeHighlight('doneList')"
        >
-    <h2>DONE</h2>
+    <div class="box-title">DONE</div>
     <div class="example-box" *ngFor="let task of doneTasks" cdkDrag>{{task.name}}</div>
   </div>
 </div>

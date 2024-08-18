@@ -1,5 +1,4 @@
 <div>
-  <!-- Toggle Button for Table and Card View -->
   <div class="view-toggle">
     <button mat-raised-button color="primary" (click)="currentView = 'table'" [disabled]="currentView === 'table'">
       Table View
@@ -8,7 +7,6 @@
       Card View
     </button>
   </div>
-<!-- Table View -->
 <div class="table-container" *ngIf="currentView === 'table'">
   <table mat-table [dataSource]="tasks" class="mat-elevation-z8 custom-table">
     <ng-container matColumnDef="name">
@@ -112,12 +110,7 @@
               <span *ngIf="task.editingField !== 'status'" (dblclick)="onEditCell(task, 'status')">{{ task.status }}</span>
             </p>
           </mat-card-content>
-          <mat-card-actions>
-            <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
-            <mat-slide-toggle [(ngModel)]="task.isActive" (change)="toggleActive(task)">
-              {{ task.isActive ? 'Active' : 'Inactive' }}
-            </mat-slide-toggle>
-          </mat-card-actions>
+          
         </mat-card>
       </div>
     </div>

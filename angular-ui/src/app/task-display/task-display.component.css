@@ -244,18 +244,18 @@ body, mat-card {
 
 /* Card styling */
 mat-card {
-  background-color: #333; /* Default background color */
+  background-color: #976565; /* Default background color */
   color: white;
   border-radius: 12px;
   transition: all 0.3s ease; /* Smooth transition for hover effect */
   position: relative;
-  padding: 20px;
+  padding: 10px;
   font-size: 1rem; /* Base font size for card content */
 }
 
 /* Hover effect to change background color */
 mat-card:hover {
-  background-color: #444; /* Change to a lighter color on hover */
+  background-color: #3192c2; /* Change to a lighter color on hover */
   transform: translateY(-5px); /* Lift the card slightly on hover */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
 }
@@ -271,13 +271,13 @@ mat-card-title {
 /* Card content styling */
 mat-card-content p {
   margin: 0 0 10px 0;
-  font-size: 1.2rem; /* Slightly larger font for content */
+  font-size: 15px 
 }
 
 /* Assignee, creator, and status styling */
 mat-select {
-  background-color: #222; /* Background for dropdown */
-  color: #ffeb3b; /* Yellow text for dropdown */
+  background-color: #dbd7d7; /* Background for dropdown */
+  color: #010101; /* Yellow text for dropdown */
 }
 
 mat-option {

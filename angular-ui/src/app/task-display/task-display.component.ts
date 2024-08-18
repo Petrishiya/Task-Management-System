@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
+import { UserService } from '../user.service'; // Import the UserService to fetch assignees and creators
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -33,23 +34,53 @@ export class TaskDisplayComponent implements OnInit {
   assignees: string[] = [];
   creators: string[] = [];
   statuses: string[] = [];
-  displayedColumns: string[] = ['name', 'description', 'assignee', 'creator', 'status', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'assignee', 'creator', 'status'];
   currentView: string = 'table'; // Default view is table view
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.taskService.getTasks().subscribe(data => {
       this.tasks = data;
-      this.extractDropdownData(data);
+      this.extractStatuses(data);  // Extract statuses from tasks
     });
+
+    this.fetchAssignees(); 
+    this.fetchCreators();// Fetch updated assignees and creators
+  }
+  
+
+  fetchAssignees(): void {
+    this.taskService.getAssignees().subscribe((activeUsers) => {
+      this.assignees = activeUsers;
+      },
+      error => {
+        console.error('Error fetching assignees', error);
+      }
+    );
   }
 
-  extractDropdownData(tasks: any[]): void {
-    this.assignees = [...new Set(tasks.map(task => task.assignee))];
-    this.creators = [...new Set(tasks.map(task => task.creator))];
+  fetchCreators(): void {
+    this.taskService.getCreators().subscribe((activeUsers) => {
+      this.creators = activeUsers;
+      },
+    (error )=> {
+        console.error('Error fetching creators', error);
+      }
+    );
+  }
+
+
+  extractStatuses(tasks: any[]): void {
     this.statuses = [...new Set(tasks.map(task => task.status))];
   }
+
+  /*fetchAssigneesAndCreators(): void {
+    this.userService.getas().subscribe(data => {
+      this.assignees = data;
+      this.creators = data; // Assuming the assignees and creators are the same
+    });
+  }*/
 
   onEditCell(task: any, field: string): void {
     task.editingField = field;
