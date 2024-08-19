@@ -35,7 +35,16 @@ export class UserService {
         catchError(this.handleError<any>('updateUserStatus'))
       );
   }*/
+      updateUser(user: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/update/${user.id}`, user);
+      }
 
+      updateUsername(user: any): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}/updateUsername/${user.id}`, user);
+      }
+    
+
+      
   // Generic error handling method
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

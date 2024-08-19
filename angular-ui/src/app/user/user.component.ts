@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { identity } from 'rxjs';
 
 declare var bootstrap: any; // Declare bootstrap for using modal programmatically
 
@@ -28,6 +29,8 @@ declare var bootstrap: any; // Declare bootstrap for using modal programmaticall
 })
 export class UserComponent implements OnInit {
   userForm!: FormGroup;
+  editUserForm!: FormGroup;
+
   users: any[] = [];
 
   modalInstance: any;
@@ -56,12 +59,22 @@ displayedColumns: any;
 
 
   ngOnInit(): void {
+
+
     this.userForm = this.fb.group({
-      name: ['', [Validators.required]],
+     name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       mobileno: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
       status: ['ACTIVE', Validators.required] });
       displayedColumns: [] = ['name', 'email', 'mobileno'];
+     
+     
+      this.editUserForm = this.fb.group({
+        id: [''],
+        name: ['', [Validators.required]],
+        email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+        mobileno: [{ value: '', disabled: true }, [Validators.required, Validators.pattern('^[0-9]+$')]],
+      });
     this.fetchUsers();
   }
 
@@ -126,25 +139,75 @@ displayedColumns: any;
     );
   }  
   */
-  updateUserStatus(userId: number, isActive: boolean): void {
-    this.userService.updateUserStatus(userId, isActive).subscribe(
-      (updatedUser) => {
-        console.log('User status updated', updatedUser);
-        // Optionally, refresh the user list
-        this.fetchUsers();
+
+  openEditForm(user: any): void {
+    console.log('User object:', user);  // Add this line to verify the user object
+
+    this.editUserForm.patchValue({
+
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        mobileno: user.mobileno,
+        status: user.status
+    });
+}
+
+updateUsername(): void {
+  if (this.editUserForm.valid) {
+    const updatedUser = this.editUserForm.getRawValue(); // Get form values including disabled fields
+
+    this.userService.updateUsername(updatedUser).subscribe(
+      (response) => {
+        console.log('User updated successfully', response);
+        this.fetchUsers(); 
+        this.modalInstance.hide(); 
       },
       (error) => {
-        console.error('Error updating user status', error);
+        console.error('Error updating user', error);
       }
     );
   }
+}
   
+  openEditModal(user: any): void {
+    this.editUserForm.setValue({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      mobileno: user.mobileno
+    });
+
+    this.modalInstance = new bootstrap.Modal(document.getElementById('editUserModal'));
+    this.modalInstance.show();
+  }
   
-  
-  
-  
+ /* updateUser(): void {
+    if (this.editUserForm.valid) {
+        const updatedUser = this.editUserForm.value;
+        const user = this.users.find(u => u.email === updatedUser.email);
+
+        if (user) {
+            updatedUser.id = user.id;
+
+            this.userService.updateUsername(updatedUser).subscribe(
+                (response) => {
+                    console.log('User updated successfully', response);
+                    this.fetchUsers(); 
+                    this.modalInstance.hide(); 
+                },
+                (error) => {
+                    console.error('Error updating user', error);
+                }
+            );
+        } else {
+            console.error('User not found');
+        }}}
+
+  */
   closeModal() {
     this.modalInstance = bootstrap.Modal.getInstance(document.getElementById('createUserModal'));
     this.modalInstance.hide();
   }
 }
+

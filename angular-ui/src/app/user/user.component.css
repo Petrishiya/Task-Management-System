@@ -24,3 +24,8 @@
   input[type='checkbox'] {
     margin-left: 10px;
   }
+  [title] {
+    cursor: not-allowed;
+    color: gray;
+  }
+  
