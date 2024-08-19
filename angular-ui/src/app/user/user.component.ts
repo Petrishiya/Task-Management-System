@@ -36,25 +36,32 @@ displayedColumns: any;
   constructor(private fb: FormBuilder, private userService: UserService) {}
 
   toggleUserStatus(user: any): void {
-    const newStatus = user.status === 'ACTIVE' ? false : true; // Convert string to boolean
-    this.userService.updateUserStatus(user.id, newStatus).subscribe(
-      (updatedUser) => {
-        user.status = updatedUser.status; // Update the status in the local array
-      },
-      (error) => {
-        console.error('Error updating user status', error);
-      }
-    );
+    const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+
+    const confirmation = window.confirm(`Are you sure you want to change the status to ${newStatus}?`);
+    
+    if (confirmation) {
+      this.userService.updateUserStatus(user.id, newStatus === 'ACTIVE').subscribe(
+        (updatedUser) => {
+          user.status = updatedUser.status; // Update the status in the local array
+          console.log('User status updated', updatedUser);
+          this.fetchUsers(); 
+        },
+        (error) => {
+          console.error('Error updating user status', error);
+        }
+      );
+    }
   }
+
+
   ngOnInit(): void {
     this.userForm = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      mobileNo: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      status: ['active', [Validators.required]]});
-      displayedColumns: [] = ['name', 'email', 'mobileNo', 'status'];
-
-
+      mobileno: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      status: ['ACTIVE', Validators.required] });
+      displayedColumns: [] = ['name', 'email', 'mobileno'];
     this.fetchUsers();
   }
 

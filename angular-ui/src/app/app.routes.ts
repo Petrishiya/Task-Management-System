@@ -6,7 +6,7 @@ import { UserComponent } from './user/user.component';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/tasks/create', pathMatch: 'full' },
+  { path: '', redirectTo: '/tasks', pathMatch: 'full' },
   { path: 'tasks/create', component: CreateTaskComponent },
   { path: 'tasks', component: TaskDisplayComponent },
   { path: 'kanban', component: KanbanDashboardComponent },

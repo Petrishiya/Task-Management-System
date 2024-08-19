@@ -1,12 +1,13 @@
-/* General Styling */
 .view-toggle {
     margin-bottom: 20px;
+    margin-top:20px;
     display: flex;
     justify-content: center;
+    
   }
   .table-container {
     padding: 20px;
-    background-color: #2c5d85; /* Background color similar to the image */
+    background-color: #2c5d85; 
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   }
@@ -18,7 +19,7 @@
   }
   
   .mat-header-cell {
-    background-color: #3175b5; /* Header background color */
+    background-color: #3175b5; 
     color: white;
     font-weight: bold;
     padding: 16px;
@@ -29,7 +30,7 @@
     padding: 16px;
     text-align: left;
     background-color: #f5f5f5; /* Row background color */
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #5a1313;
   }
   
   .mat-header-row {
@@ -41,11 +42,11 @@
   }
   
   .mat-row:nth-child(even) .mat-cell {
-    background-color: #e9f1f8; /* Alternating row color */
+    background-color: #5c702a; 
   }
   
   .mat-row:hover .mat-cell {
-    background-color: #d8e8f3; /* Hover effect for rows */
+    background-color: #2f6d96;
   }
   
   .mat-button {
@@ -244,28 +245,27 @@ body, mat-card {
 
 /* Card styling */
 mat-card {
-  background-color: #976565; /* Default background color */
+  background-color: #976565; 
   color: white;
   border-radius: 12px;
-  transition: all 0.3s ease; /* Smooth transition for hover effect */
+  transition: all 0.3s ease;
   position: relative;
   padding: 10px;
-  font-size: 1rem; /* Base font size for card content */
+  font-size: 1rem;
 }
 
-/* Hover effect to change background color */
 mat-card:hover {
-  background-color: #3192c2; /* Change to a lighter color on hover */
-  transform: translateY(-5px); /* Lift the card slightly on hover */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  background-color: #3192c2; 
+  transform: translateY(-5px); 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
 }
 
 /* Card title styling */
 mat-card-title {
-  font-size: 1.8rem; /* Larger font size for title */
-  font-weight: 700; /* Bold title */
+  font-size: 1.8rem;
+  font-weight: 700; 
   margin-bottom: 10px;
-  color: #ffeb3b; /* Yellow title color */
+  color: #ffeb3b; 
 }
 
 /* Card content styling */
@@ -276,36 +276,37 @@ mat-card-content p {
 
 /* Assignee, creator, and status styling */
 mat-select {
-  background-color: #dbd7d7; /* Background for dropdown */
-  color: #010101; /* Yellow text for dropdown */
+  background-color: #dbd7d7; 
+  color: #010101; 
 }
 
 mat-option {
-  color: #333; /* Color for options in the dropdown */
+  color: #333; 
 }
 
-/* Toggle button styling */
+/* Toggle button  */
 mat-slide-toggle {
-  color: white; /* Toggle color */
-  margin-top: 10px;
+  color: white; 
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 mat-slide-toggle.mat-checked {
-  color: #76ff03; /* Green for active state */
+  color: #76ff03;
 }
 
-/* Delete button styling */
+/* Delete button */
 button.mat-button {
-  background-color: #f44336; /* Red button for delete */
+  background-color: #f44336; 
   color: white;
-  font-size: 1rem; /* Standard button font size */
+  font-size: 1rem; 
 }
 
 button.mat-button:hover {
-  background-color: #d32f2f; /* Darker red on hover */
+  background-color: #d32f2f; 
 }
 
-/* Custom rounded corner on the top right (optional) */
+/*  rounded corner  */
 mat-card::before {
   content: "";
   position: absolute;
@@ -313,13 +314,12 @@ mat-card::before {
   right: 0;
   width: 40px;
   height: 40px;
-  background-color: #ff5722; /* Orange corner color */
+  background-color: #ff5722;
   border-top-right-radius: 12px;
   clip-path: polygon(100% 0, 0 0, 100% 100%);
   z-index: 1;
 }
 
-/* Hover effect to change the top corner color */
 mat-card:hover::before {
-  background-color: #03a9f4; /* Change corner color on hover */
+  background-color: #03a9f4; 
 }
