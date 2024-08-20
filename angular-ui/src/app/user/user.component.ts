@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../user.service'; // Import the UserService
+import { UserService } from '../user.service'; 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { identity } from 'rxjs';
 
-declare var bootstrap: any; // Declare bootstrap for using modal programmatically
+declare var bootstrap: any; 
 
 @Component({
   selector: 'app-user',
@@ -141,8 +141,7 @@ displayedColumns: any;
   */
 
   openEditForm(user: any): void {
-    console.log('User object:', user);  // Add this line to verify the user object
-
+    console.log('User object:', user);  
     this.editUserForm.patchValue({
 
         id: user.id,
@@ -155,7 +154,7 @@ displayedColumns: any;
 
 updateUsername(): void {
   if (this.editUserForm.valid) {
-    const updatedUser = this.editUserForm.getRawValue(); // Get form values including disabled fields
+    const updatedUser = this.editUserForm.getRawValue(); 
 
     this.userService.updateUsername(updatedUser).subscribe(
       (response) => {

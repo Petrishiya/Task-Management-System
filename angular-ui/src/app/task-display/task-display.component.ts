@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { UserService } from '../user.service'; // Import the UserService to fetch assignees and creators
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
@@ -34,7 +34,7 @@ export class TaskDisplayComponent implements OnInit {
   assignees: string[] = [];
   creators: string[] = [];
   statuses: string[] = [];
-  displayedColumns: string[] = ['name', 'description', 'assignee', 'creator', 'status'];
+  displayedColumns: string[] = ['name', 'description', 'assignee', 'creator', 'status','actions'];
   currentView: string = 'table'; // Default view is table view
 
   constructor(private taskService: TaskService, private userService: UserService) {}
@@ -42,11 +42,11 @@ export class TaskDisplayComponent implements OnInit {
   ngOnInit(): void {
     this.taskService.getTasks().subscribe(data => {
       this.tasks = data;
-      this.extractStatuses(data);  // Extract statuses from tasks
+      this.extractStatuses(data);  
     });
 
     this.fetchAssignees(); 
-    this.fetchCreators();// Fetch updated assignees and creators
+    this.fetchCreators();
   }
   
 
@@ -111,4 +111,19 @@ export class TaskDisplayComponent implements OnInit {
     task.editingField = field;
   }
 
-}
+  selectedValue: string = 'All';
+  options= [  
+    {
+      value: 'All',label:'All',colorClass:'red-option'
+    },
+    {
+      value: 'Active',label:'Active',colorClass:'green-option'
+    },
+    {
+      value: 'Inactive',label:'Inactive',colorClass:'blue-option'
+    
+}];
+
+onSelectionchange(event: any) {
+  console.log(event.value);
+}}

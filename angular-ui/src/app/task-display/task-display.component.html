@@ -61,11 +61,10 @@
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let task">
         <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
-        <mat-slide-toggle [(ngModel)]="task.isActive" (change)="toggleActive(task)">
-          {{ task.isActive ? 'Active' : 'Inactive' }}
-        </mat-slide-toggle>
+        
       </td>
     </ng-container>
+    
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
@@ -100,19 +99,21 @@
             <p><strong>Creator:</strong>
               <mat-select *ngIf="task.editingField === 'creator'" [(ngModel)]="task.creator" (selectionChange)="onSave(task)">
                 <mat-option *ngFor="let creator of creators" [value]="creator">{{ creator }}</mat-option>
+                  
               </mat-select>
               <span *ngIf="task.editingField !== 'creator'" (dblclick)="onEditCell(task, 'creator')">{{ task.creator }}</span>
             </p>
-            <p><strong>Status:</strong>
-              <mat-select *ngIf="task.editingField === 'status'" [(ngModel)]="task.status" (selectionChange)="onSave(task)">
-                <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
-              </mat-select>
+              <p><strong>Status:</strong>
+              <mat-select class="example-panel-red.mat-mdc-select-panel" *ngIf="task.editingField === 'status'" [(ngModel)]="task.status" (selectionChange)="onSave(task)" >
+                <mat-option  *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+               </mat-select>
               <span *ngIf="task.editingField !== 'status'" (dblclick)="onEditCell(task, 'status')">{{ task.status }}</span>
             </p>
           </mat-card-content>
           
         </mat-card>
       </div>
+      
     </div>
   </div>
 </div>
