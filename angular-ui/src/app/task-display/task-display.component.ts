@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
 import { UserService } from '../user.service'; // Import the UserService to fetch assignees and creators
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -37,7 +37,7 @@ export class TaskDisplayComponent implements OnInit {
   displayedColumns: string[] = ['name', 'description', 'assignee', 'creator', 'status'];
   currentView: string = 'table'; // Default view is table view
 
-  constructor(private taskService: TaskService, private userService: UserService) {}
+  constructor(private taskService: TaskService, private userService: UserService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.taskService.getTasks().subscribe(data => {
@@ -81,6 +81,21 @@ export class TaskDisplayComponent implements OnInit {
       this.creators = data; // Assuming the assignees and creators are the same
     });
   }*/
+    getStatusColor(status: string): string {
+      switch (status) {
+        case 'TO-DO':  // Assuming 'TO-DO' is the value from the backend
+          return 'status-open';
+        case 'IN PROGRESS':  // Assuming 'IN PROGRESS' is the value from the backend
+          return 'status-in-progress';
+        case 'DONE':  // Assuming 'DONE' is the value from the backend
+          return 'status-completed';
+        case 'READY FOR QA':  // Assuming 'READY FOR QA' is the value from the backend
+          return 'status-ready-for-qa';
+        default:
+          return '';
+      }
+    }
+    
 
   onEditCell(task: any, field: string): void {
     task.editingField = field;
@@ -93,9 +108,16 @@ export class TaskDisplayComponent implements OnInit {
   }
 
   onCellBlur(task: any): void {
-    this.onSave(task);
+  delete task.editingField;
+  this.cdr.markForCheck();  // 
+
   }
 
+  onStatusChange(task: any): void {
+    this.taskService.updateTask(task).subscribe(() => {
+      this.cdr.markForCheck();  
+    });
+  }
   toggleActive(task: any): void {
     task.isActive = !task.isActive;
     this.taskService.updateTask(task).subscribe();  // Update task status in the backend
