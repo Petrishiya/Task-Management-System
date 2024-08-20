@@ -1,8 +1,14 @@
 <div class="container">
-  <button type="button" class="btn btn-primary" class="createuser" data-bs-toggle="modal" data-bs-target="#createUserModal">
+  <!-- Button to Open the Create User Modal -->
+  <button 
+    type="button" 
+    class="btn btn-primary" 
+    data-bs-toggle="modal" 
+    data-bs-target="#createUserModal">
     Create User
   </button>
 
+  <!-- Create User Modal -->
   <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -12,30 +18,52 @@
         </div>
         <div class="modal-body">
           <form [formGroup]="userForm" (ngSubmit)="createUser()">
+            <!-- Name Field -->
             <div class="form-group">
               <label for="name">Name</label>
-              <input id="name" formControlName="name" class="form-control" />
+              <input 
+                id="name" 
+                formControlName="name" 
+                class="form-control" />
               <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched" class="text-danger">
                 Name is required.
               </div>
             </div>
 
+            <!-- Email Field -->
             <div class="form-group">
               <label for="email">Email</label>
-              <input id="email" type="email" formControlName="email" class="form-control" />
+              <input 
+                id="email" 
+                type="email" 
+                formControlName="email" 
+                class="form-control" />
               <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
-                Valid email is required.
+                <div *ngIf="userForm.get('email')?.errors?.['required']">Valid email is required.</div>
+                <div *ngIf="userForm.get('email')?.errors?.['serverError']">{{ userForm.get('email')?.errors?.['serverError'] }}</div>
               </div>
             </div>
 
+            <!-- Mobile Number Field -->
             <div class="form-group">
               <label for="mobileno">Mobile Number</label>
-              <input id="mobileno" formControlName="mobileno" class="form-control" />
+              <input 
+                id="mobileno" 
+                formControlName="mobileno" 
+                class="form-control" />
               <div *ngIf="userForm.get('mobileno')?.invalid && userForm.get('mobileno')?.touched" class="text-danger">
-                Valid mobile number is required.
+                <div *ngIf="userForm.get('mobileno')?.errors?.['required']">Valid mobile number is required.</div>
+                <div *ngIf="userForm.get('mobileno')?.errors?.['serverError']">{{ userForm.get('mobileno')?.errors?.['serverError'] }}</div>
               </div>
             </div>
-                 <button type="submit" class="btn btn-primary mt-3" [disabled]="userForm.invalid">Create User</button>
+
+            <!-- Submit Button -->
+            <button 
+              type="submit" 
+              class="btn btn-primary mt-3" 
+              [disabled]="userForm.invalid">
+              Create User
+            </button>
           </form>
         </div>
       </div>
@@ -43,8 +71,7 @@
   </div>
 </div>
 
-<!--User List-->
-   
+<!-- User List -->
 <div class="container mt-5">
   <h2>User List Data</h2>
   <table class="table table-bordered">
@@ -70,8 +97,7 @@
               'btn-success': user.status === 'ACTIVE',
               'btn-danger': user.status === 'INACTIVE'
             }"
-            (click)="toggleUserStatus(user)"
-          >
+            (click)="toggleUserStatus(user)">
             {{ user.status === 'ACTIVE' ? 'Active' : 'Inactive' }}
           </button>
         </td>
@@ -89,28 +115,50 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="editUserForm" (ngSubmit)="updateUsername()" >
+        <form [formGroup]="editUserForm" (ngSubmit)="updateUsername()">
           <input type="hidden" formControlName="id" />
+
+          <!-- Edit Name Field -->
           <div class="form-group">
             <label for="editName">Name</label>
-            <input id="editName" formControlName="name" class="form-control" />
-
+            <input 
+              id="editName" 
+              formControlName="name" 
+              class="form-control" />
             <div *ngIf="editUserForm.get('name')?.invalid && editUserForm.get('name')?.touched" class="text-danger">
               Name is required.
             </div>
           </div>
 
+          <!-- Edit Email Field (Read-Only) -->
           <div class="form-group">
             <label for="editEmail">Email</label>
-            <input id="editEmail" formControlName="email" class="form-control" readonly [title]="'Field not editable'" />
+            <input 
+              id="editEmail" 
+              formControlName="email" 
+              class="form-control" 
+              readonly 
+              [title]="'Field not editable'" />
           </div>
 
+          <!-- Edit Mobile Number Field (Read-Only) -->
           <div class="form-group">
             <label for="editMobileNo">Mobile Number</label>
-            <input id="editMobileNo" formControlName="mobileno" class="form-control" readonly [title]="'Field not editable'" />
+            <input 
+              id="editMobileNo" 
+              formControlName="mobileno" 
+              class="form-control" 
+              readonly 
+              [title]="'Field not editable'" />
           </div>
 
-          <button type="submit" class="btn btn-primary mt-3" [disabled]="editUserForm.invalid">Save Changes</button>
+          <!-- Save Changes Button -->
+          <button 
+            type="submit" 
+            class="btn btn-primary mt-3" 
+            [disabled]="editUserForm.invalid">
+            Save Changes
+          </button>
         </form>
       </div>
     </div>

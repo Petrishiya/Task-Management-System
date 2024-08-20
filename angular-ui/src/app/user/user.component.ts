@@ -78,8 +78,7 @@ displayedColumns: any;
     this.fetchUsers();
   }
 
-  // Method to create a new user
-  createUser() {
+  createUser(): void {
     if (this.userForm.valid) {
       this.userService.createUser(this.userForm.value).subscribe(
         (response) => {
@@ -87,14 +86,19 @@ displayedColumns: any;
           this.userForm.reset();
           this.fetchUsers(); 
           this.closeModal(); 
-          this.updateAssigneesAndCreators(); 
           alert('User created successfully!');
-
         },
         (error) => {
           console.error('Error creating user', error);
           if (error.status === 409) {
-            alert('Email or Mobile Number already exists!');
+            const errorMessage = error.error.message || 'Email or Mobile Number already exists!';
+            // Show the error message on the relevant form control
+            if (errorMessage.includes('Email')) {
+              this.userForm.get('email')?.setErrors({ serverError: errorMessage });
+            }
+            if (errorMessage.includes('Mobile Number')) {
+              this.userForm.get('mobileno')?.setErrors({ serverError: errorMessage });
+            }
           } else if (error.status === 400) {
             alert('Invalid input. Please check your data and try again.');
           } else {
@@ -104,6 +108,7 @@ displayedColumns: any;
       );
     }
   }
+  
   updateAssigneesAndCreators() {
     this.userService.getAssigneesAndCreators().subscribe(
       (data) => {
