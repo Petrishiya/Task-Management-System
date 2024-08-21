@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { TaskService } from '../task.service';
-import { UserService } from '../user.service'; // Import the UserService to fetch assignees and creators
+import { UserService } from '../user.service';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-task-display',
@@ -24,7 +25,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatButtonModule,
     MatCardModule,
     MatRadioModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    DragDropModule
   ],
   templateUrl: './task-display.component.html',
   styleUrls: ['./task-display.component.css']
@@ -35,24 +37,26 @@ export class TaskDisplayComponent implements OnInit {
   creators: string[] = [];
   statuses: string[] = [];
   displayedColumns: string[] = ['name', 'description', 'assignee', 'creator', 'status'];
-  currentView: string = 'table'; // Default view is table view
+  currentView: string = 'table';
+  highlightedColumn: string | null = null;
+
 
   constructor(private taskService: TaskService, private userService: UserService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.taskService.getTasks().subscribe(data => {
       this.tasks = data;
-      this.extractStatuses(data);  // Extract statuses from tasks
+      this.extractStatuses(data);
     });
 
-    this.fetchAssignees(); 
-    this.fetchCreators();// Fetch updated assignees and creators
+    this.fetchAssignees();
+    this.fetchCreators();
   }
-  
 
   fetchAssignees(): void {
-    this.taskService.getAssignees().subscribe((activeUsers) => {
-      this.assignees = activeUsers;
+    this.taskService.getAssignees().subscribe(
+      (activeUsers) => {
+        this.assignees = activeUsers;
       },
       error => {
         console.error('Error fetching assignees', error);
@@ -61,41 +65,44 @@ export class TaskDisplayComponent implements OnInit {
   }
 
   fetchCreators(): void {
-    this.taskService.getCreators().subscribe((activeUsers) => {
-      this.creators = activeUsers;
+    this.taskService.getCreators().subscribe(
+      (activeUsers) => {
+        this.creators = activeUsers;
       },
-    (error )=> {
+      error => {
         console.error('Error fetching creators', error);
       }
     );
   }
 
-
   extractStatuses(tasks: any[]): void {
     this.statuses = [...new Set(tasks.map(task => task.status))];
   }
 
-  /*fetchAssigneesAndCreators(): void {
-    this.userService.getas().subscribe(data => {
-      this.assignees = data;
-      this.creators = data; // Assuming the assignees and creators are the same
-    });
-  }*/
-    getStatusColor(status: string): string {
-      switch (status) {
-        case 'TO-DO':  // Assuming 'TO-DO' is the value from the backend
-          return 'status-open';
-        case 'IN PROGRESS':  // Assuming 'IN PROGRESS' is the value from the backend
-          return 'status-in-progress';
-        case 'DONE':  // Assuming 'DONE' is the value from the backend
-          return 'status-completed';
-        case 'READY FOR QA':  // Assuming 'READY FOR QA' is the value from the backend
-          return 'status-ready-for-qa';
-        default:
-          return '';
-      }
+  getTasksByStatus(status: string): any[] {
+    return this.tasks.filter(task => task.status === status);
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'TO-DO':
+        return 'status-open';
+      case 'IN PROGRESS':
+        return 'status-in-progress';
+      case 'DONE':
+        return 'status-completed';
+      case 'READY FOR QA':
+        return 'status-ready-for-qa';
+      default:
+        return '';
     }
-    
+  }
+
+  getConnectedDropLists(): string[] {
+    return this.statuses.map(status => `${status}List`);
+  }
+  
+
 
   onEditCell(task: any, field: string): void {
     task.editingField = field;
@@ -108,19 +115,16 @@ export class TaskDisplayComponent implements OnInit {
   }
 
   onCellBlur(task: any): void {
-  delete task.editingField;
-  this.cdr.markForCheck();  // 
-
+    delete task.editingField;
+    this.cdr.markForCheck();
   }
 
-  onStatusChange(task: any): void {
-    this.taskService.updateTask(task).subscribe(() => {
-      this.cdr.markForCheck();  
-    });
-  }
+  selectedTask: any = null; // Selected task for detailed view
+
+
   toggleActive(task: any): void {
     task.isActive = !task.isActive;
-    this.taskService.updateTask(task).subscribe();  // Update task status in the backend
+    this.taskService.updateTask(task).subscribe();
   }
 
   deleteTask(taskId: number): void {
@@ -132,5 +136,67 @@ export class TaskDisplayComponent implements OnInit {
   onDoubleClick(task: any, field: string): void {
     task.editingField = field;
   }
+  selectTask(task: any): void {
+    this.selectedTask = task; // Store selected task for detailed view
+  }
+
+  closeTaskDetails(): void {
+    this.selectedTask = null; // Close task details modal
+  }
+
+  onDrop(event: CdkDragDrop<any[]>): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      const movedTask = event.container.data[event.currentIndex];
+      movedTask.status = event.container.id.replace('List', '');
+      this.onStatusChange(movedTask);
+      this.highlightedColumn = null;
+
+    }
+  }
+
+  onStatusChange(task: any): void {
+    this.taskService.updateTask(task).subscribe(() => {
+      this.cdr.markForCheck();
+    });
+  }
+  highlightColumn(event: any, columnId: string) {
+    this.removeAllHighlights(); 
+    document.getElementById(columnId)?.classList.add('highlight');
+  }
+
+  removeHighlight(columnId: string) {
+    document.getElementById(columnId)?.classList.remove('highlight');
+  }
+
+  removeAllHighlights() {
+    const columns = document.querySelectorAll('.kanban-column');
+    columns.forEach(column => column.classList.remove('highlight'));
+  }
+
+  onDragStart(task: any): void {
+    task.isDragging = true;
+  }
+
+  onDragEnd(task: any): void {
+    task.isDragging = false;
+    this.highlightedColumn = null;  // Remove column highlight
+  }
+
+  onColumnEnter(status: string): void {
+    this.highlightedColumn = status;
+  }
+
+  onColumnExit(status: string): void {
+    if (this.highlightedColumn === status) {
+      this.highlightedColumn = null;
+    }
+  }
+  canEnter(): boolean {
+    return true;
+  }
 
 }
+

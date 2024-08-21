@@ -7,121 +7,123 @@
       Card View
     </button>
   </div>
-<div class="table-container" *ngIf="currentView === 'table'">
-  <table mat-table [dataSource]="tasks" class="mat-elevation-z8">
-    
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> Name </th>
-      <td mat-cell *matCellDef="let task">
-        <input *ngIf="task.editingField === 'name'" [(ngModel)]="task.name" (blur)="onCellBlur(task)" />
-        <span *ngIf="task.editingField !== 'name'" (dblclick)="onEditCell(task, 'name')">{{ task.name }}</span>
-      </td>
-    </ng-container>
 
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef> Description </th>
-      <td mat-cell *matCellDef="let task">
-        <input *ngIf="task.editingField === 'description'" [(ngModel)]="task.description" (blur)="onCellBlur(task)" />
-        <span *ngIf="task.editingField !== 'description'" (dblclick)="onEditCell(task, 'description')">
-          {{ task.description }}
-        </span>
-      </td>
-    </ng-container>
+  <!-- Table View -->
+  <div class="table-container" *ngIf="currentView === 'table'">
+    <table mat-table [dataSource]="tasks" class="mat-elevation-z8 custom-table">
 
-    <ng-container matColumnDef="assignee">
-      <th mat-header-cell *matHeaderCellDef> Assignee </th>
-      <td mat-cell *matCellDef="let task">
-        <mat-select *ngIf="task.editingField === 'assignee'" [(ngModel)]="task.assignee" (selectionChange)="onSave(task)">
-          <mat-option *ngFor="let assignee of assignees" [value]="assignee">{{ assignee }}</mat-option>
-        </mat-select>
-        <span *ngIf="task.editingField !== 'assignee'" (dblclick)="onEditCell(task, 'assignee')">{{ task.assignee }}</span>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let task">
+          <input *ngIf="task.editingField === 'name'" [(ngModel)]="task.name" (blur)="onCellBlur(task)" />
+          <span *ngIf="task.editingField !== 'name'" (dblclick)="onEditCell(task, 'name')">{{ task.name }}</span>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="creator">
-      <th mat-header-cell *matHeaderCellDef> Creator </th>
-      <td mat-cell *matCellDef="let task">
-        <mat-select *ngIf="task.editingField === 'creator'" [(ngModel)]="task.creator" (selectionChange)="onSave(task)">
-          <mat-option *ngFor="let creator of creators" [value]="creator">{{ creator }}</mat-option>
-        </mat-select>
-        <span *ngIf="task.editingField !== 'creator'" (dblclick)="onEditCell(task, 'creator')">{{ task.creator }}</span>
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let task">
+          <input *ngIf="task.editingField === 'description'" [(ngModel)]="task.description" (blur)="onCellBlur(task)" />
+          <span *ngIf="task.editingField !== 'description'" (dblclick)="onEditCell(task, 'description')">
+            {{ task.description }}
+          </span>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef> Status </th>
-      <td mat-cell *matCellDef="let task" [ngClass]="getStatusColor(task.status)">
-        <ng-container *ngIf="task.editingField === 'status'; else displayStatus">
-          <mat-select 
-            [(ngModel)]="task.status" 
-            (selectionChange)="onStatusChange(task)"
-            (closed)="onCellBlur(task)">
-            <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
+      <ng-container matColumnDef="assignee">
+        <th mat-header-cell *matHeaderCellDef> Assignee </th>
+        <td mat-cell *matCellDef="let task">
+          <mat-select *ngIf="task.editingField === 'assignee'" [(ngModel)]="task.assignee" (selectionChange)="onSave(task)">
+            <mat-option *ngFor="let assignee of assignees" [value]="assignee">{{ assignee }}</mat-option>
           </mat-select>
-        </ng-container>
-        <ng-template #displayStatus>
-          <div (dblclick)="onEditCell(task, 'status')" style="cursor: pointer;">
-            {{ task.status }}
-          </div>
-        </ng-template>
-      </td>
-    </ng-container>
-    
+          <span *ngIf="task.editingField !== 'assignee'" (dblclick)="onEditCell(task, 'assignee')">{{ task.assignee }}</span>
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef> Actions </th>
-      <td mat-cell *matCellDef="let task">
-        <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
-        <mat-slide-toggle [(ngModel)]="task.isActive" (change)="toggleActive(task)">
-          {{ task.isActive ? 'Active' : 'Inactive' }}
-        </mat-slide-toggle>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getStatusColor(row.status)"></tr>
-  </table>
-</div>
+      <ng-container matColumnDef="creator">
+        <th mat-header-cell *matHeaderCellDef> Creator </th>
+        <td mat-cell *matCellDef="let task">
+          <mat-select *ngIf="task.editingField === 'creator'" [(ngModel)]="task.creator" (selectionChange)="onSave(task)">
+            <mat-option *ngFor="let creator of creators" [value]="creator">{{ creator }}</mat-option>
+          </mat-select>
+          <span *ngIf="task.editingField !== 'creator'" (dblclick)="onEditCell(task, 'creator')">{{ task.creator }}</span>
+        </td>
+      </ng-container>
 
-<!-- Card View -->
-<div class="card-container" *ngIf="currentView === 'card'">
-  
-  <div class="row">
-    <div class="col-sm-6 col-md-4 col-lg-3" *ngFor="let task of tasks">
-      <mat-card [ngClass]="getStatusColor(task.status)">
-        <mat-card-header>
-          <mat-card-title>
-            <input *ngIf="task.editingField === 'name'" [(ngModel)]="task.name" (blur)="onCellBlur(task)" />
-            <span *ngIf="task.editingField !== 'name'" (dblclick)="onEditCell(task, 'name')">{{ task.name }}</span>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>
-            <input *ngIf="task.editingField === 'description'" [(ngModel)]="task.description" (blur)="onCellBlur(task)" />
-            <span *ngIf="task.editingField !== 'description'" (dblclick)="onEditCell(task, 'description')">
-              {{ task.description }}
-            </span>
-          </p>
-          <p><strong>Assignee:</strong>
-            <mat-select *ngIf="task.editingField === 'assignee'" [(ngModel)]="task.assignee" (selectionChange)="onSave(task)">
-              <mat-option *ngFor="let assignee of assignees" [value]="assignee">{{ assignee }}</mat-option>
-            </mat-select>
-            <span *ngIf="task.editingField !== 'assignee'" (dblclick)="onEditCell(task, 'assignee')">{{ task.assignee }}</span>
-          </p>
-          <p><strong>Creator:</strong>
-            <mat-select *ngIf="task.editingField === 'creator'" [(ngModel)]="task.creator" (selectionChange)="onSave(task)">
-              <mat-option *ngFor="let creator of creators" [value]="creator">{{ creator }}</mat-option>
-            </mat-select>
-            <span *ngIf="task.editingField !== 'creator'" (dblclick)="onEditCell(task, 'creator')">{{ task.creator }}</span>
-          </p>
-          <p><strong>Status:</strong>
-            <mat-select *ngIf="task.editingField === 'status'" [(ngModel)]="task.status" (selectionChange)="onSave(task)">
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let task" [ngClass]="getStatusColor(task.status)">
+          <ng-container *ngIf="task.editingField === 'status'; else displayStatus">
+            <mat-select 
+              [(ngModel)]="task.status" 
+              (selectionChange)="onStatusChange(task)"
+              (closed)="onCellBlur(task)">
               <mat-option *ngFor="let status of statuses" [value]="status">{{ status }}</mat-option>
             </mat-select>
-            <span *ngIf="task.editingField !== 'status'" (dblclick)="onEditCell(task, 'status')">{{ task.status }}</span>
-          </p>
-        </mat-card-content>
-        
-      </mat-card>
+          </ng-container>
+          <ng-template #displayStatus>
+            <div (dblclick)="onEditCell(task, 'status')" style="cursor: pointer;">
+              {{ task.status }}
+            </div>
+          </ng-template>
+        </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let task">
+          <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
+          <mat-slide-toggle [(ngModel)]="task.isActive" (change)="toggleActive(task)">
+            {{ task.isActive ? 'Active' : 'Inactive' }}
+          </mat-slide-toggle>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+<tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getStatusColor(row.status)"></tr>
+
+    </table>
+  </div>
+
+  <!-- Kanban Dashboard View -->
+  <div class="kanban-board" *ngIf="currentView === 'card'">
+    <div class="kanban-column"
+         *ngFor="let status of statuses"
+         cdkDropList
+         id="{{status}}List"
+         [cdkDropListData]="getTasksByStatus(status)"
+         [cdkDropListConnectedTo]="getConnectedDropLists()"
+         [cdkDropListEnterPredicate]="canEnter"
+         (cdkDropListEntered)="onColumnEnter(status)"
+         (cdkDropListExited)="onColumnExit(status)"
+         (cdkDropListDropped)="onDrop($event)"
+         [ngClass]="{'highlight-column': highlightedColumn === status}">
+         
+
+      <div class="box-title">{{ status }}</div>
+      
+      <div class="task-card"
+           *ngFor="let task of getTasksByStatus(status)"
+           cdkDrag
+           [ngClass]="getStatusColor(task.status)"
+          
+           (click)="selectTask(task)">
+
+        <div class="task-title">{{ task.name }}</div>
+        <div class="task-description">Description: {{ task.description }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Details Modal -->
+  <div class="task-details-modal" *ngIf="selectedTask">
+    <div class="modal-content">
+      <h2>{{ selectedTask.name }}</h2>
+      <p><strong>Description:</strong> {{ selectedTask.description }}</p>
+      <p><strong>Assignee:</strong> {{ selectedTask.assignee }}</p>
+      <p><strong>Creator:</strong> {{ selectedTask.creator }}</p>
+      <p><strong>Status:</strong> {{ selectedTask.status }}</p>
+      <button (click)="closeTaskDetails()">Close</button>
     </div>
   </div>
 </div>
