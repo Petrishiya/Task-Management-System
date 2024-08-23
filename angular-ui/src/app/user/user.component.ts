@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from '../user.service'; // Import the UserService
+import { UserService } from '../user.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,30 +14,143 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { identity } from 'rxjs';
-
-declare var bootstrap: any; // Declare bootstrap for using modal programmatically
-
+ 
+declare var bootstrap: any;
+ 
 @Component({
   selector: 'app-user',
   standalone: true,
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css'],
-  imports: [HttpClientModule, ReactiveFormsModule, FormsModule, CommonModule,MatRadioButton,
-    MatInputModule,MatFormFieldModule,MatTableModule,MatSelectModule,MatOptionModule,MatButtonModule,
-    MatCardModule,MatRadioModule,MatSlideToggleModule]
+  imports: [
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    MatRadioButton,
+    MatInputModule,
+    MatFormFieldModule,
+    MatTableModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    MatCardModule,
+    MatRadioModule,
+    MatSlideToggleModule
+  ]
 })
 export class UserComponent implements OnInit {
   userForm!: FormGroup;
   editUserForm!: FormGroup;
-
   users: any[] = [];
-
   modalInstance: any;
-displayedColumns: any;
-
+  displayedColumns: string[] = ['name', 'email', 'mobileno', 'status', 'actions'];
+  errorMessage: string = '';  // Add a property to store the error message
+ 
   constructor(private fb: FormBuilder, private userService: UserService) {}
+ 
+  ngOnInit(): void {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      mobileno: ['', [Validators.required, Validators.pattern('^[0-9]+$ [0-9]{0-10}')]],
+      status: ['ACTIVE', Validators.required]
+    });
+ 
+    this.editUserForm = this.fb.group({
+      id: [''],
+      name: ['', [Validators.required]],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      mobileno: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
+      status: ['', Validators.required]
+    });
+ 
+    this.fetchUsers();
+  }
+ 
+  fetchUsers(): void {
+    this.userService.fetchUsers().subscribe(
+      (data) => {
+        this.users = data;
+      },
+      (error) => {
+        console.error('Error fetching users', error);
+      }
+    );
+  }
+  createUser(): void {
+    if (this.userForm.valid) {
+      this.userService.createUser(this.userForm.value).subscribe(
+        (response) => {
+          console.log('User created successfully', response);
+          this.userForm.reset();
+          this.fetchUsers();
+          this.closeModal();
+          alert('User created successfully!');
+        },
+        (error) => 
+          {
+          console.error('Error creating user', error);
+          if (error.status === 409) 
+            {
+            const errorMessage = error.message || 'Email Id already exists!';
+              this.userForm.get('email')?.setErrors({ serverError: "Email Id already exists" });
+            
+            }
+            if (error.status === 409) 
+            {
+              const errorMessage = error.message || 'Email or Mobile Number already exists!';
 
+              this.userForm.get('mobileno')?.setErrors({ serverError: "Mobile no already exists" });
+            }
+          
+           else if (error.status === 400) {
+            this.errorMessage = 'Invalid input. Please check your data and try again.';
+          } else {
+            this.errorMessage = 'An unexpected error occurred while creating the user.';
+          }
+
+        }
+      );
+
+    }
+
+  }
+ 
+  updateUsernameAndMobile(): void {
+    console.log('Update method triggered');
+    if (this.editUserForm.valid) {
+        const updatedUser = this.editUserForm.getRawValue(); // Get form values including disabled fields
+ 
+        this.userService.updateUsernameAndMobile(updatedUser).subscribe(
+            (response) => {
+                console.log('User updated successfully', response);
+                alert("User Detail updated");
+                this.fetchUsers();
+                this.modalInstance.hide();
+            },
+            (error) => {
+                console.error('Error updating user', error);
+                alert('Error updating user');
+
+                if (error.status === 409) {
+                  this.userForm.get('email')?.setErrors({ serverError: error });
+                }
+                if (error.includes('Mobile Number')) {
+                  this.userForm.get('mobileno')?.setErrors({ serverError: error });
+                }
+             
+               /* if (error.status === 409) {
+                    this.errorMessage = error.error.message || 'Email or Mobile Number already exists!';
+                } else {
+                    this.errorMessage = 'An unexpected error occurred while updating the user.';
+                }*/
+            }
+        );
+    } else {
+        console.log('Form is invalid');
+    }
+  }
   toggleUserStatus(user: any): void {
     const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
 
@@ -56,163 +169,23 @@ displayedColumns: any;
       );
     }
   }
+ 
+openEditModal(user: any): void {
+  this.editUserForm.patchValue({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    mobileno: user.mobileno,
+    status: user.status
+  });
 
-
-  ngOnInit(): void {
-
-
-    this.userForm = this.fb.group({
-     name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      mobileno: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      status: ['ACTIVE', Validators.required] });
-      displayedColumns: [] = ['name', 'email', 'mobileno'];
-     
-     
-      this.editUserForm = this.fb.group({
-        id: [''],
-        name: ['', [Validators.required]],
-        email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-        mobileno: [{ value: '', disabled: true }, [Validators.required, Validators.pattern('^[0-9]+$')]],
-      });
-    this.fetchUsers();
-  }
-
-  createUser(): void {
-    if (this.userForm.valid) {
-      this.userService.createUser(this.userForm.value).subscribe(
-        (response) => {
-          console.log('User created successfully', response);
-          this.userForm.reset();
-          this.fetchUsers(); 
-          this.closeModal(); 
-          alert('User created successfully!');
-        },
-        (error) => {
-          console.error('Error creating user', error);
-          if (error.status === 409) {
-            const errorMessage = error.error.message || 'Email or Mobile Number already exists!';
-            // Show the error message on the relevant form control
-            if (errorMessage.includes('Email')) {
-              this.userForm.get('email')?.setErrors({ serverError: errorMessage });
-            }
-            if (errorMessage.includes('Mobile Number')) {
-              this.userForm.get('mobileno')?.setErrors({ serverError: errorMessage });
-            }
-          } else if (error.status === 400) {
-            alert('Invalid input. Please check your data and try again.');
-          } else {
-            alert('An unexpected error occurred while creating the user.');
-          }
-        }
-      );
-    }
-  }
-  
-  updateAssigneesAndCreators() {
-    this.userService.getAssigneesAndCreators().subscribe(
-      (data) => {
-        // Update your dropdowns or components here
-        console.log('Updated assignees and creators', data);
-      },
-      (error) => {
-        console.error('Error updating assignees and creators', error);
-      }
-    );
-  }
-  // Method to fetch all users
-  fetchUsers() {
-    this.userService.fetchUsers().subscribe(
-      (data) => {
-        this.users = data;
-      },
-      (error) => {
-        console.error('Error fetching users', error);
-      }
-    );
-  }
-/*
-  updateUserStatus(user: any) {
-    // Call the update status API from the user service
-    this.userService.updateUserStatus(user.id, user.status).subscribe(
-      (response) => {
-        console.log('User status updated successfully', response);
-      },
-      (error) => {
-        console.error('Error updating user status', error);
-      }
-    );
-  }  
-  */
-
-  openEditForm(user: any): void {
-    console.log('User object:', user);  // Add this line to verify the user object
-
-    this.editUserForm.patchValue({
-
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        mobileno: user.mobileno,
-        status: user.status
-    });
+  this.modalInstance = new bootstrap.Modal(document.getElementById('editUserModal'));
+  this.modalInstance.show();
 }
 
-updateUsername(): void {
-  if (this.editUserForm.valid) {
-    const updatedUser = this.editUserForm.getRawValue(); // Get form values including disabled fields
-
-    this.userService.updateUsername(updatedUser).subscribe(
-      (response) => {
-        console.log('User updated successfully', response);
-        this.fetchUsers(); 
-        this.modalInstance.hide(); 
-      },
-      (error) => {
-        console.error('Error updating user', error);
-      }
-    );
-  }
+closeModal(): void {
+  this.modalInstance = bootstrap.Modal.getInstance(document.getElementById('createUserModal'));
+  this.modalInstance.hide();
 }
-  
-  openEditModal(user: any): void {
-    this.editUserForm.setValue({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      mobileno: user.mobileno
-    });
-
-    this.modalInstance = new bootstrap.Modal(document.getElementById('editUserModal'));
-    this.modalInstance.show();
-  }
-  
- /* updateUser(): void {
-    if (this.editUserForm.valid) {
-        const updatedUser = this.editUserForm.value;
-        const user = this.users.find(u => u.email === updatedUser.email);
-
-        if (user) {
-            updatedUser.id = user.id;
-
-            this.userService.updateUsername(updatedUser).subscribe(
-                (response) => {
-                    console.log('User updated successfully', response);
-                    this.fetchUsers(); 
-                    this.modalInstance.hide(); 
-                },
-                (error) => {
-                    console.error('Error updating user', error);
-                }
-            );
-        } else {
-            console.error('User not found');
-        }}}
-
-  */
-  closeModal() {
-    this.modalInstance = bootstrap.Modal.getInstance(document.getElementById('createUserModal'));
-    this.modalInstance.hide();
-  }
 }
-
+ 
