@@ -240,7 +240,7 @@ body {
 .task-details-modal::before {
   content: '';
   position: fixed;
- 
+}
 .task-details-modal::before {
   content: '';
   position: fixed;

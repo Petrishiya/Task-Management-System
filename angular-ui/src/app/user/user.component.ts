@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { type } from 'os';
+import { ServerResponse } from 'http';
  
 declare var bootstrap: any;
  
@@ -53,7 +55,7 @@ export class UserComponent implements OnInit {
     this.userForm = this.fb.group({
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      mobileno: ['', [Validators.required, Validators.pattern('^[0-9]+$ [0-9]{0-10}')]],
+      mobileno: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       status: ['ACTIVE', Validators.required]
     });
  
@@ -77,47 +79,39 @@ export class UserComponent implements OnInit {
         console.error('Error fetching users', error);
       }
     );
-  }
-  createUser(): void {
+  }createUser(): void {
     if (this.userForm.valid) {
-      this.userService.createUser(this.userForm.value).subscribe(
-        (response) => {
-          console.log('User created successfully', response);
-          this.userForm.reset();
-          this.fetchUsers();
-          this.closeModal();
-          alert('User created successfully!');
-        },
-        (error) => 
-          {
-          console.error('Error creating user', error);
-          if (error.status === 409) 
-            {
-            const errorMessage = error.message || 'Email Id already exists!';
-              this.userForm.get('email')?.setErrors({ serverError: "Email Id already exists" });
-            
+        this.userService.createUser(this.userForm.value).subscribe(
+            (response) => {
+                console.log('User created successfully', response);
+                this.userForm.reset();
+                this.fetchUsers();
+                this.closeModal();
+                alert('User created successfully!');
+            },
+            (error) => {
+                console.error('Error creating user', error);
+                if (error.status === 409) {
+                    const errorMessage = error.error?.error || 'An unexpected conflict occurred.';
+                   
+                    if (errorMessage.includes('Email')) {
+                        this.userForm.get('email')?.setErrors({ serverError: 'Email already exists!' });
+                    } else if (errorMessage.includes('Mobile')) {
+                        this.userForm.get('mobileno')?.setErrors({ serverError: 'Mobile Number already exists!' });
+                    } else {
+                        this.errorMessage = errorMessage;
+                    }
+                } else if (error.status === 400) {
+                    this.errorMessage = 'Invalid input. Please check your data and try again.';
+                } else {
+                    this.errorMessage = 'An unexpected error occurred while creating the user.';
+                }
             }
-            if (error.status === 409) 
-            {
-              const errorMessage = error.message || 'Email or Mobile Number already exists!';
-
-              this.userForm.get('mobileno')?.setErrors({ serverError: "Mobile no already exists" });
-            }
-          
-           else if (error.status === 400) {
-            this.errorMessage = 'Invalid input. Please check your data and try again.';
-          } else {
-            this.errorMessage = 'An unexpected error occurred while creating the user.';
-          }
-
-        }
-      );
-
+        );
     }
-
-  }
+}
  
-  updateUsernameAndMobile(): void {
+    updateUsernameAndMobile(): void {
     console.log('Update method triggered');
     if (this.editUserForm.valid) {
         const updatedUser = this.editUserForm.getRawValue(); // Get form values including disabled fields
@@ -125,32 +119,19 @@ export class UserComponent implements OnInit {
         this.userService.updateUsernameAndMobile(updatedUser).subscribe(
             (response) => {
                 console.log('User updated successfully', response);
-                alert("User Detail updated");
                 this.fetchUsers();
                 this.modalInstance.hide();
             },
             (error) => {
                 console.error('Error updating user', error);
-                alert('Error updating user');
-
-                if (error.status === 409) {
-                  this.userForm.get('email')?.setErrors({ serverError: error });
-                }
-                if (error.includes('Mobile Number')) {
-                  this.userForm.get('mobileno')?.setErrors({ serverError: error });
-                }
-             
-               /* if (error.status === 409) {
-                    this.errorMessage = error.error.message || 'Email or Mobile Number already exists!';
-                } else {
-                    this.errorMessage = 'An unexpected error occurred while updating the user.';
-                }*/
             }
         );
     } else {
         console.log('Form is invalid');
     }
   }
+ 
+
   toggleUserStatus(user: any): void {
     const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
 

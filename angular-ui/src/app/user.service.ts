@@ -46,10 +46,10 @@ export class UserService {
 
       
   // Generic error handling method
-  private handleError<T>(operation = 'operation', result?: T) {
+  /*private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(`${operation} failed: ${error.message}`);
       return throwError(() => new Error(`${operation} failed: ${error.message}`));
     };
-  }
+  }*/
 }
